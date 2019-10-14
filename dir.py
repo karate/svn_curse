@@ -1,20 +1,16 @@
-import pysvn
-import sys
-import getpass
-
 class Dir():
-    def __init__ ( self, client ):
+    def __init__(self, client):
         self.client = client
-        self.previous = None;
+        self.previous = None
 
-    def ls( self, dir ):
+    def ls(self, directory):
         files = []
         try:
-            list = sorted(self.client.list( dir ), reverse=True)
-            if ( len( list ) == 0 ):
+            results = sorted(self.client.list(directory), reverse=True)
+            if not results:
                 return False
 
-            for file in list:
+            for file in results:
                 files.append({'path': file[0].repos_path, 'status': 'remote'})
         except:
             return None
