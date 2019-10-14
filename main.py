@@ -1,10 +1,15 @@
 #! /usr/bin/env python3
 
 import sys
-import pysvn
 import os
+import getpass
+import keyring
+import pysvn
 import dir
 import curse
+
+# User Modifiable Configuration
+USERNAME = ""
 
 def _get_working_copy ( argv ):
     if (len(argv) > 1):
@@ -67,15 +72,24 @@ def browse_repo ( c, client, working_copy ):
         elif cha == ord('k'):
             c.go_up()
 
-def login_handler(*args):
-    # TODO: Use python keyring
+def login_handler(username=USERNAME):
+    """pysvn expect the callback_get_login to return a tuple of four values
+    (retcode, username, password, save).
 
-    # hard-code credentials
-    # return True, "username", "password", True
-
-    # or prompt user
-    user = input( "Username: " )
-    passw = getpass.getpass( "Password: " )
-    return True, user, passw, True
+    More info: https://tools.ietf.org/doc/python-svn/pysvn_prog_ref.html#pysvn_client_callback_get_login
+    """
+    if not username:
+        print("[info] Configure the 'USERNAME' variable in 'main.py' to avoid "
+              "this prompt in the future.")
+        username = input("Username: ")
+    # Check for existing keyring record
+    password = keyring.get_password("svn_curse", username)
+    if not password:
+        print("[info] No password located for user '%s' in keyring."
+              % (username))
+        keyring.set_password("svn_curse", username,
+                             getpass.getpass("Password: "))
+        password = keyring.get_password("svn_curse", username)
+    return True, username, password, True
 
 main()
