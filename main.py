@@ -1,23 +1,25 @@
 #! /usr/bin/env python3
-
 import sys
-import pysvn
 import os
 import dir
 import curse
+from svn import local
 
-def _get_working_copy ( argv ):
+
+def _get_working_copy( argv ):
     if (len(argv) > 1):
-        return argv[1].rstrip('/')
+        cwd = argv[1]
     else:
-        return os.getcwd().rstrip('/')
+        cwd = os.getcwd()
+    return cwd
 
-def main ():
+
+def main():
     working_copy = _get_working_copy( sys.argv )
-    client = pysvn.Client()
+    client = local.LocalClient(working_copy)
     client.callback_get_login = login_handler
 
-    c = curse.Curse();
+    c = curse.Curse()
     c.update_status_line( "w: view working copy status, r: browse remote repo, q: quit" )
 
     while True:
@@ -30,9 +32,10 @@ def main ():
             c.quit()
             break  # Exit the while()
 
+
 def view_status ( c, client, working_copy ):
-    c.update_status_line( "loading..." )
-    files = client.status( working_copy, get_all = False)
+    c.update_status_line("status loading...")
+    files = client.status(working_copy)
 
     c.update_status_line( working_copy + " - j/k: up/down, q: quit")
     c.print_local_files( files )
@@ -47,11 +50,12 @@ def view_status ( c, client, working_copy ):
         elif cha == ord('k'):
             c.go_up()
 
+
 def browse_repo ( c, client, working_copy ):
-    c.update_status_line( "loading..." )
+    c.update_status_line("browse loading...")
     d = dir.Dir( client )
     files = d.ls( working_copy )
-    if ( files is None ):
+    if files is None:
         c.update_status_line( working_copy + " - Not under version control. q: quit")
     else:
         c.update_status_line( working_copy + " - j/k: up/down, q: quit")
@@ -67,6 +71,7 @@ def browse_repo ( c, client, working_copy ):
         elif cha == ord('k'):
             c.go_up()
 
+
 def login_handler(*args):
     # TODO: Use python keyring
 
@@ -78,4 +83,6 @@ def login_handler(*args):
     passw = getpass.getpass( "Password: " )
     return True, user, passw, True
 
-main()
+
+if __name__ == '__main__':
+    main()

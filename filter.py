@@ -1,24 +1,24 @@
-import pysvn
 from line import Line
+
 
 class Filter():
     def __init__( self, screen, colors ):
         self.screen = screen
         self.color_codes = {
-            pysvn.wc_status_kind.added       : colors['white'],
-            pysvn.wc_status_kind.unversioned : colors['green'],
-            pysvn.wc_status_kind.missing     : colors['red'],
-            pysvn.wc_status_kind.deleted     : colors['red'],
-            pysvn.wc_status_kind.modified    : colors['blue'],
-            pysvn.wc_status_kind.ignored     : colors['yellow'],
-            'remote'                         : colors['yellow'],
+            'added': colors['white'],
+            'unversioned': colors['green'],
+            'missing': colors['red'],
+            'deleted': colors['red'],
+            'modified': colors['blue'],
+            'ignored': colors['yellow'],
+            'remote': colors['yellow'],
         }
 
     def filter_local_files ( self, files ):
         lines = []
         for idx, f in enumerate(files):
-            filename = f.path
-            status = f.text_status
+            filename = f.name
+            status = f.type_raw_name
             line = self.construct_line( filename, status, idx+1 )
             lines.append( line )
         return lines
@@ -26,10 +26,8 @@ class Filter():
     def filter_remote_repo ( self, files ):
         lines = []
         for idx, f in enumerate(files):
-            filename = f['path']
-            status = f['status']
-            line = self.construct_line( filename, status, idx+1 )
-            lines.append( line )
+            line = self.construct_line(f['path'], f['status'], idx+1)
+            lines.append(line)
         return lines
 
     def construct_line( self, filename, status, idx ):
