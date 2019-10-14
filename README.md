@@ -1,5 +1,5 @@
 ## svn-curse
-This is a prood-of-concept cli svn client with ncurses, written in python.
+This is a proof-of-concept cli svn client with ncurses, written in python.
 
 I'm a python amateur.
 
