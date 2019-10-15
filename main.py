@@ -35,7 +35,7 @@ def main():
 
 def view_status ( c, client, working_copy ):
     c.update_status_line("status loading...")
-    files = client.status(working_copy)
+    files = client.status()
 
     c.update_status_line( working_copy + " - j/k: up/down, q: quit")
     c.print_local_files( files )

@@ -6,7 +6,9 @@ class Filter():
         self.screen = screen
         self.color_codes = {
             'added': colors['white'],
+            'normal': colors['white'],
             'unversioned': colors['green'],
+            'incomplete': colors['yellow'],
             'missing': colors['red'],
             'deleted': colors['red'],
             'modified': colors['blue'],
