@@ -1,7 +1,7 @@
 import curses
 from filter import Filter
 from line import Line
-from pysvn import PysvnStatus
+
 
 class Curse():
     def _set_colors( self ):
@@ -30,7 +30,6 @@ class Curse():
             "yellow": [curses.color_pair(5), curses.color_pair(11)],
             "black":  [curses.color_pair(6), curses.color_pair(12)],
         }
-
 
     def __init__ ( self ):
         # Initialize screen

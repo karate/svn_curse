@@ -9,12 +9,21 @@ enjoy.
 
 
 ## Installation
-Install python3 and pysvn
+Install python3, subversion and with a new virtualenv:
 ```bash
-$ sudo apt-get install python3 python-svn
+$ pip install svn
+```
+
+For Windows, install python3, subversion with a new virtualenv:
+```
+$ pip install -r requirements.txt
 ```
 
 ## Usage
 ```bash
 ./main.py path/to/svn/repo
+```
+or
+```bash
+python main.py path\to\svn\repo
 ```
