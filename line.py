@@ -22,6 +22,7 @@ class Line():
         try:
             self.screen.addstr(self.y, 0, self.text, self.color)
         except curses.error as e:
+            # add log
             pass
 
     def set_selected( self, selected = True ):

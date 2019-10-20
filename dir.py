@@ -13,6 +13,7 @@ class Dir(object):
             for file in list:
                 files.append({'path': file, 'status': 'remote'})
         except:
+            # add log
             return None
 
         return files

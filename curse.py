@@ -5,31 +5,35 @@ from line import Line
 
 class Curse():
     def _set_colors( self ):
-        curses.start_color()
-        curses.use_default_colors()
-        # Normal colors
-        curses.init_pair(1, curses.COLOR_WHITE, -1)
-        curses.init_pair(2, curses.COLOR_RED, -1)
-        curses.init_pair(3, curses.COLOR_GREEN, -1)
-        curses.init_pair(4, curses.COLOR_BLUE, -1)
-        curses.init_pair(5, curses.COLOR_YELLOW, -1)
-        curses.init_pair(6, curses.COLOR_BLACK, -1)
-        # Inverted colors, for selected items
-        curses.init_pair(7, curses.COLOR_BLACK, curses.COLOR_WHITE)
-        curses.init_pair(8, curses.COLOR_BLACK, curses.COLOR_RED)
-        curses.init_pair(9, curses.COLOR_BLACK, curses.COLOR_GREEN)
-        curses.init_pair(10, curses.COLOR_BLACK, curses.COLOR_BLUE)
-        curses.init_pair(11, curses.COLOR_BLACK, curses.COLOR_YELLOW)
-        curses.init_pair(12, curses.COLOR_WHITE, curses.COLOR_BLACK)
+        try:
+            curses.start_color()
+            curses.use_default_colors()
+            # Normal colors
+            curses.init_pair(1, curses.COLOR_WHITE, -1)
+            curses.init_pair(2, curses.COLOR_RED, -1)
+            curses.init_pair(3, curses.COLOR_GREEN, -1)
+            curses.init_pair(4, curses.COLOR_BLUE, -1)
+            curses.init_pair(5, curses.COLOR_YELLOW, -1)
+            curses.init_pair(6, curses.COLOR_BLACK, -1)
+            # Inverted colors, for selected items
+            curses.init_pair(7, curses.COLOR_BLACK, curses.COLOR_WHITE)
+            curses.init_pair(8, curses.COLOR_BLACK, curses.COLOR_RED)
+            curses.init_pair(9, curses.COLOR_BLACK, curses.COLOR_GREEN)
+            curses.init_pair(10, curses.COLOR_BLACK, curses.COLOR_BLUE)
+            curses.init_pair(11, curses.COLOR_BLACK, curses.COLOR_YELLOW)
+            curses.init_pair(12, curses.COLOR_WHITE, curses.COLOR_BLACK)
 
-        self.colors = {
-            "white":  [curses.color_pair(1), curses.color_pair(7)],
-            "red":    [curses.color_pair(2), curses.color_pair(8)],
-            "green":  [curses.color_pair(3), curses.color_pair(9)],
-            "blue":   [curses.color_pair(4), curses.color_pair(10)],
-            "yellow": [curses.color_pair(5), curses.color_pair(11)],
-            "black":  [curses.color_pair(6), curses.color_pair(12)],
-        }
+            self.colors = {
+                "white":  [curses.color_pair(1), curses.color_pair(7)],
+                "red":    [curses.color_pair(2), curses.color_pair(8)],
+                "green":  [curses.color_pair(3), curses.color_pair(9)],
+                "blue":   [curses.color_pair(4), curses.color_pair(10)],
+                "yellow": [curses.color_pair(5), curses.color_pair(11)],
+                "black":  [curses.color_pair(6), curses.color_pair(12)],
+            }
+        except curses.error as e
+            #add log
+            pass
 
     def __init__ ( self ):
         # Initialize screen
@@ -87,10 +91,14 @@ class Curse():
         self.screen.refresh()
 
     def quit( self ):
-        curses.nocbreak()
-        self.screen.keypad(False)
-        curses.echo()
-        curses.endwin()
+        try:
+            curses.nocbreak()
+            self.screen.keypad(False)
+            curses.echo()
+            curses.endwin()
+        except curses.error as e
+            #add log
+            pass
 
     def go_down ( self ):
         if ( self.selected is not None ):

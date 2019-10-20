@@ -4,6 +4,7 @@ import os
 import dir
 import curse
 from svn import local
+from svn import exception
 
 
 def _get_working_copy( argv ):
@@ -15,23 +16,29 @@ def _get_working_copy( argv ):
 
 
 def main():
-    working_copy = _get_working_copy( sys.argv )
-    client = local.LocalClient(working_copy)
-    client.callback_get_login = login_handler
+    try:
+        working_copy = _get_working_copy( sys.argv )
+        client = local.LocalClient(working_copy)
+        client.callback_get_login = login_handler
 
-    c = curse.Curse()
-    c.update_status_line( "w: view working copy status, r: browse remote repo, q: quit" )
+        c = curse.Curse()
+        c.update_status_line( "w: view working copy status, r: browse remote repo, q: quit" )
 
-    while True:
-        ch = c.screen.getch()
-        if ch == ord('r'):
-            browse_repo( c, client, working_copy )
-        elif ch == ord('w'):
-            view_status(c, client, working_copy )
-        elif ch == ord('q'):
-            c.quit()
-            break  # Exit the while()
-
+        while True:
+            ch = c.screen.getch()
+            if ch == ord('r'):
+                browse_repo( c, client, working_copy )
+            elif ch == ord('w'):
+                view_status(c, client, working_copy )
+            elif ch == ord('q'):
+                c.quit()
+                break  # Exit the while()
+    except exception.SvnException as e
+        #add log
+        pass
+    except curses.error as e
+        #add log
+        pass
 
 def view_status ( c, client, working_copy ):
     c.update_status_line("status loading...")

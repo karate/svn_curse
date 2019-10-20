@@ -18,18 +18,26 @@ class Filter():
 
     def filter_local_files ( self, files ):
         lines = []
-        for idx, f in enumerate(files):
-            filename = f.name
-            status = f.type_raw_name
-            line = self.construct_line( filename, status, idx+1 )
-            lines.append( line )
+        try:
+            for idx, f in enumerate(files):
+                filename = f.name
+                status = f.type_raw_name
+                line = self.construct_line( filename, status, idx+1 )
+                lines.append( line )
+        except:
+            #add log
+            return None
         return lines
 
     def filter_remote_repo ( self, files ):
         lines = []
-        for idx, f in enumerate(files):
-            line = self.construct_line(f['path'], f['status'], idx+1)
-            lines.append(line)
+        try:
+            for idx, f in enumerate(files):
+                line = self.construct_line(f['path'], f['status'], idx+1)
+                lines.append(line)
+        except:
+            #add log
+            return None
         return lines
 
     def construct_line( self, filename, status, idx ):
