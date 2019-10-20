@@ -30,6 +30,10 @@ class Filter():
         for idx, f in enumerate(files):
             line = self.construct_line(f['path'], f['status'], idx+1)
             lines.append(line)
+        mlines, _ = self.screen.getmaxyx()
+        for i in range(len(files), mlines):
+            line = self.construct_line(' ', 'remote', i+1)
+            lines.append(line)
         return lines
 
     def construct_line( self, filename, status, idx ):

@@ -1,0 +1,2 @@
+class QuitSignal(Exception):
+    pass
