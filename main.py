@@ -30,11 +30,14 @@ class Navigation(object):
         self.c = curse.Curse()
         self._client = client
         self._base = base
-        self._nav_path = [self._base]
+        self._nav_path = []
 
     @property
     def path(self):
-        return os.path.join(*self._nav_path)
+        try:
+            return os.path.join(*self._nav_path)
+        except TypeError:
+            return None
 
     def input_main(self):
         try:
@@ -70,7 +73,7 @@ class Navigation(object):
             sys.exit(0)
 
     def base_status(self, text):
-        self.c.update_status_line(text + " - j/k: up/down, l/h: in/out q: quit")
+        self.c.update_status_line(str(text) + " - j/k: up/down, l/h: in/out q: quit")
 
     def main_nav(self):
         self.c.update_status_line("w: view working copy status, r: browse remote repo, q: quit")
@@ -91,8 +94,9 @@ class Navigation(object):
         files = d.ls(rel)
         if files is None:
             self.c.update_status_line(os.path.join(self._base, rel) + " - Not under version control. q: quit")
+            self._nav_path = self._nav_path[:-1]
         else:
-            self.base_status(self.path)
+            self.base_status(os.path.join(self._base, rel if rel else ''))
             self.c.print_remote_files(files)
 
         self.input_nav()
@@ -102,7 +106,7 @@ class Navigation(object):
             self._nav_path.append(str(self.c.lines[self.c.selected]).strip('/'))
 
     def _remove(self):
-        if len(self._nav_path) > 1:
+        if len(self._nav_path):
             self._nav_path = self._nav_path[:-1]
 
 
