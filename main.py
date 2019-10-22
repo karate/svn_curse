@@ -33,10 +33,10 @@ def main():
             elif ch == ord('q'):
                 c.quit()
                 break  # Exit the while()
-    except exception.SvnException as e
+    except exception.SvnException as e:
         #add log
         pass
-    except curses.error as e
+    except curses.error as e:
         #add log
         pass
 
