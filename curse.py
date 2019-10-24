@@ -31,7 +31,7 @@ class Curse():
                 "yellow": [curses.color_pair(5), curses.color_pair(11)],
                 "black":  [curses.color_pair(6), curses.color_pair(12)],
             }
-        except curses.error as e
+        except curses.error as e:
             #add log
             pass
 
@@ -96,7 +96,7 @@ class Curse():
             self.screen.keypad(False)
             curses.echo()
             curses.endwin()
-        except curses.error as e
+        except curses.error as e:
             #add log
             pass
 
