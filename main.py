@@ -22,7 +22,38 @@ def main():
     client.callback_get_login = login_handler
 
     nav = Navigation(client, base)
-    nav.main_nav()
+    nav.base_status()
+    nav.input_nav()
+
+
+class NavigationStatus(object):
+    def __init__(self):
+        self._map = {'j': 'up', 'k': 'down', 'l': 'enter directory', 'h': 'previous directory',
+                     'w': 'view working copy status', 'r': 'browse remote repo', 'q': 'quit'}
+        self.text = None
+        self.enter_previous = True
+        self.main = True
+        self.text_only = False
+
+    def shortcuts_(self, navigation):
+        excludes = []
+
+        if self.text:
+            self.main = False
+        if self.main:
+            excludes.extend(['j', 'k', 'l'])
+        else:
+            excludes.extend(['w', 'r'])
+        if not navigation.history:
+            excludes.append('h')
+        if navigation.mode == 'local':
+            excludes.extend(['h', 'l'])
+
+        if self.text is not None and self.text_only:
+            excludes = self._map.keys()
+
+        nav_text = ', '.join(['{}: {}'.format(x, y) for x, y in sorted(self._map.items()) if x not in excludes])
+        return nav_text
 
 
 class Navigation(object):
@@ -30,57 +61,61 @@ class Navigation(object):
         self.c = curse.Curse()
         self._client = client
         self._base = base
-        self._nav_path = []
+        self.history = []
+        self.mode = None
+        self._status = NavigationStatus()
 
     @property
     def path(self):
         try:
-            return os.path.join(*self._nav_path)
+            return os.path.join(*self.history)
         except TypeError:
             return None
-
-    def input_main(self):
-        try:
-            while True:
-                ch = self.c.screen.getch()
-                if ch == ord('r'):
-                    self.browse_repo()
-                elif ch == ord('w'):
-                    self.view_status(self._base)
-                elif ch == ord('q'):
-                    raise QuitSignal("Exit from input_main.")
-        except QuitSignal:
-            self.c.quit()
 
     def input_nav(self):
         try:
             while True:
                 cha = self.c.screen.getch()
                 if cha == ord('q'):
-                     raise QuitSignal("Quit from input_nav.")
-                elif cha == ord('j'):
-                    self.c.go_down()
-                elif cha == ord('k'):
-                    self.c.go_up()
-                elif cha == ord('l'):
-                    self._append()
-                    self.browse_repo(self.path)
-                elif cha == ord('h'):
-                    self._remove()
-                    self.browse_repo(self.path)
+                    raise QuitSignal("Quit from input_nav.")
+                if not self._status.main:
+                    if cha == ord('h') and self.mode == 'remote':
+                        if self._remove():
+                            self.browse_repo(self.path)
+                    elif cha == ord('j'):
+                        self.c.go_down()
+                    elif cha == ord('k'):
+                        self.c.go_up()
+                    elif cha == ord('l') and self.mode == 'remote':
+                        if self._append():
+                            self.browse_repo(self.path)
+                        self.base_status()
+                else:
+                    if cha == ord('r'):
+                        self.mode = 'remote'
+                        self._status.enter_previous = False
+                        self.browse_repo()
+                    elif cha == ord('w'):
+                        self.mode = 'local'
+                        self.view_status(self._base)
+
         except QuitSignal:
             self.c.quit()
             sys.exit(0)
 
-    def base_status(self, text):
-        self.c.update_status_line(str(text) + " - j/k: up/down, l/h: in/out q: quit")
-
-    def main_nav(self):
-        self.c.update_status_line("w: view working copy status, r: browse remote repo, q: quit")
-        self.input_main()
+    def base_status(self, text=None, text_only=False):
+        self._status.text_only = text_only
+        if text and text_only:
+            self._status.text = str(text)
+            self.c.update_status_line(self._status.text)
+        elif text:
+            self._status.text = str(text)
+            self.c.update_status_line(' - '.join([self._status.text, self._status.shortcuts_(self)]))
+        else:
+            self.c.update_status_line(self._status.shortcuts_(self))
 
     def view_status(self, working_copy):
-        self.c.update_status_line("status loading...")
+        self.base_status("status loading...", text_only=True)
         files = self._client.status()
 
         self.base_status(working_copy)
@@ -89,12 +124,12 @@ class Navigation(object):
         self.input_nav()
 
     def browse_repo(self, rel=None):
-        self.c.update_status_line("browse loading...")
+        self.base_status("browse loading...", text_only=True)
         d = dir.Dir(self._client)
         files = d.ls(rel)
         if files is None:
-            self.c.update_status_line(os.path.join(self._base, rel) + " - Not under version control. q: quit")
-            self._nav_path = self._nav_path[:-1]
+            self.base_status(os.path.join(self._base, rel) + " - Not under version control.", text_only=True)
+            self.history = self.history[:-1]
         else:
             self.base_status(os.path.join(self._base, rel if rel else ''))
             self.c.print_remote_files(files)
@@ -102,14 +137,20 @@ class Navigation(object):
         self.input_nav()
 
     def _append(self):
+        """ Returns True if append something, else False"""
         if self.c.selected:
             line = str(self.c.lines[self.c.selected])
             if line.endswith('/'):
-                self._nav_path.append(line.strip('/'))
+                self.history.append(line.strip('/'))
+                return True
+        return False
 
     def _remove(self):
-        if len(self._nav_path):
-            self._nav_path = self._nav_path[:-1]
+        """ Returns True if remove something, else False"""
+        if self.history:
+            self.history = self.history[:-1]
+            return True
+        return False
 
 
 def login_handler(*args):
