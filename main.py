@@ -103,7 +103,9 @@ class Navigation(object):
 
     def _append(self):
         if self.c.selected:
-            self._nav_path.append(str(self.c.lines[self.c.selected]).strip('/'))
+            line = str(self.c.lines[self.c.selected])
+            if line.endswith('/'):
+                self._nav_path.append(line.strip('/'))
 
     def _remove(self):
         if len(self._nav_path):
