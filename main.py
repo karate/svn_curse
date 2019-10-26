@@ -89,7 +89,6 @@ class Navigation(object):
                     elif cha == ord('l') and self.mode == 'remote':
                         if self._append():
                             self.browse_repo(self.path)
-                        self.base_status()
                 else:
                     if cha == ord('r'):
                         self.mode = 'remote'
