@@ -123,6 +123,7 @@ class Navigation(object):
         self.input_nav()
 
     def browse_repo(self, rel=None):
+        self.c.screen.clear()
         self.base_status("browse loading...", text_only=True)
         d = dir.Dir(self._client)
         files = d.ls(rel)
