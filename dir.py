@@ -3,10 +3,10 @@ class Dir(object):
         self.client = client
         self.previous = None
 
-    def ls( self, dir ):
+    def ls(self, rel=None):
         files = []
         try:
-            list = sorted(self.client.list(), reverse=True)
+            list = sorted(self.client.list(rel_path=rel), reverse=True)
             if not list:
                 return False
 

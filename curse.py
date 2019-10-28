@@ -3,7 +3,7 @@ from filter import Filter
 from line import Line
 
 
-class Curse():
+class Curse(object):
     def _set_colors( self ):
         curses.start_color()
         curses.use_default_colors()
@@ -52,6 +52,10 @@ class Curse():
 
         self.lines = []
 
+    def _clear_selection(self):
+        self.selected = None
+        self.previously_selected = None
+
     def update_status_line( self, text ):
         text = text.ljust( self.mcols )
         l = Line( 0, text, self.screen, [curses.A_REVERSE, None] )
@@ -64,12 +68,12 @@ class Curse():
         self.print_lines()
 
     def print_remote_files( self, files):
+        self._clear_selection()
         filter = Filter( self.screen, self.colors)
         self.lines = filter.filter_remote_repo( files )
         self.print_lines()
 
     def print_lines ( self ):
-
         if ( len(self.lines) == 0 ):
             self.update_status_line(' * Nothing to show * ')
         else:
