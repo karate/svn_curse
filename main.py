@@ -4,6 +4,7 @@ import os
 import dir
 import curse
 from svn import local
+from config import Config
 
 from exceptions import QuitSignal
 
@@ -28,8 +29,15 @@ def main():
 
 class NavigationStatus(object):
     def __init__(self):
-        self._map = {'j': 'up', 'k': 'down', 'l': 'enter directory', 'h': 'previous directory',
-                     'w': 'view working copy status', 'r': 'browse remote repo', 'q': 'quit'}
+        self._map = {
+            Config.keys['up']: 'up',
+            Config.keys['down']: 'down',
+            Config.keys['enter_dir']: 'enter directory',
+            Config.keys['back']: 'previous directory',
+            Config.keys['view_status']: 'view working copy status',
+            Config.keys['browse_repo']: 'browse remote repo',
+            Config.keys['quit']: 'quit'
+        }
         self.text = None
         self.enter_previous = True
         self.main = True
@@ -41,13 +49,25 @@ class NavigationStatus(object):
         if self.text:
             self.main = False
         if self.main:
-            excludes.extend(['j', 'k', 'l'])
+            excludes.extend([
+                Config.keys['down'],
+                Config.keys['up'],
+                Config.keys['enter_dir']
+            ])
         else:
-            excludes.extend(['w', 'r'])
+            excludes.extend([
+                Config.keys['view_status'],
+                Config.keys['browse_repo']
+            ])
         if not navigation.history:
-            excludes.append('h')
+            excludes.append([
+                Config.keys['back']
+            ])
         if navigation.mode == 'local':
-            excludes.extend(['h', 'l'])
+            excludes.extend([
+                Config.keys['back'],
+                Config.keys['enter_dir']
+            ])
 
         if self.text is not None and self.text_only:
             excludes = self._map.keys()
@@ -76,25 +96,25 @@ class Navigation(object):
         try:
             while True:
                 cha = self.c.screen.getch()
-                if cha == ord('q'):
+                if cha == ord(Config.keys['quit']):
                     raise QuitSignal("Quit from input_nav.")
                 if not self._status.main:
-                    if cha == ord('h') and self.mode == 'remote':
+                    if cha == ord(Config.keys['back']) and self.mode == 'remote':
                         if self._remove():
                             self.browse_repo(self.path)
-                    elif cha == ord('j'):
+                    elif cha == ord(Config.keys['down']):
                         self.c.go_down()
-                    elif cha == ord('k'):
+                    elif cha == ord(Config.keys['up']):
                         self.c.go_up()
-                    elif cha == ord('l') and self.mode == 'remote':
+                    elif cha == ord(Config.keys['enter_dir']) and self.mode == 'remote':
                         if self._append():
                             self.browse_repo(self.path)
                 else:
-                    if cha == ord('r'):
+                    if cha == ord(Config.keys['browse_repo']):
                         self.mode = 'remote'
                         self._status.enter_previous = False
                         self.browse_repo()
-                    elif cha == ord('w'):
+                    elif cha == ord(Config.keys['view_status']):
                         self.mode = 'local'
                         self.view_status(self._base)
 

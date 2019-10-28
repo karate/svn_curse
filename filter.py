@@ -5,8 +5,7 @@ from config import Config
 class Filter():
     def __init__( self, screen, colors ):
         # Load colors from config
-        c = Config('config.txt')
-        self.COLORS = c.get_colors();
+        self.COLORS = Config.colors;
 
         # Assign colors
         self.screen = screen

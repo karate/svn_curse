@@ -1,11 +1,13 @@
 from configparser import ConfigParser
 
 class Config():
+    # Load config file
+    config = ConfigParser()
+    config.read('config.txt')
 
-    def __init__(self, filename):
-        self.config = ConfigParser()
-        self.config.read(filename)
+    # TODO: check duplicate values
+    # (keys that have been assigned to more that one commands)
 
-    def get_colors(self):
-        return self.config['COLORS']
-
+    # Load config data
+    colors = config['colors']
+    keys = config['keys']

@@ -1,4 +1,4 @@
-[COLORS]
+[colors]
 
 # Available colors: white, red, green, blue, yellow, black
 
@@ -11,3 +11,12 @@ deleted = red
 modified = blue
 ignored = yellow
 remote = yellow
+
+[keys]
+down = j
+up = k
+enter_dir = l
+back = h
+browse_repo = r
+view_status = w
+quit = q

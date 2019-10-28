@@ -63,7 +63,7 @@ class Curse(object):
         self.screen.refresh()
 
     def print_local_files( self, files):
-        filter = Filter( self.screen, self.colors)
+        filter = Filter( self.screen, self.colors )
         self.lines = filter.filter_local_files( files )
         self.print_lines()
 
