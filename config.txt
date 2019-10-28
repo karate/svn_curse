@@ -1,0 +1,13 @@
+[COLORS]
+
+# Available colors: white, red, green, blue, yellow, black
+
+added = white
+normal = white
+unversioned = green
+incomplete = yellow
+missing = red
+deleted = red
+modified = blue
+ignored = yellow
+remote = yellow

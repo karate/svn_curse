@@ -1,19 +1,25 @@
 from line import Line
+from config import Config
 
 
 class Filter():
     def __init__( self, screen, colors ):
+        # Load colors from config
+        c = Config('config.txt')
+        self.COLORS = c.get_colors();
+
+        # Assign colors
         self.screen = screen
         self.color_codes = {
-            'added': colors['white'],
-            'normal': colors['white'],
-            'unversioned': colors['green'],
-            'incomplete': colors['yellow'],
-            'missing': colors['red'],
-            'deleted': colors['red'],
-            'modified': colors['blue'],
-            'ignored': colors['yellow'],
-            'remote': colors['yellow'],
+            'added': colors[self.COLORS['added']],
+            'normal': colors[self.COLORS['normal']],
+            'unversioned': colors[self.COLORS['unversioned']],
+            'incomplete': colors[self.COLORS['incomplete']],
+            'missing': colors[self.COLORS['missing']],
+            'deleted': colors[self.COLORS['deleted']],
+            'modified': colors[self.COLORS['modified']],
+            'ignored': colors[self.COLORS['ignored']],
+            'remote': colors[self.COLORS['remote']],
         }
 
     def filter_local_files ( self, files ):
