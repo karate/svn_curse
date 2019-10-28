@@ -120,8 +120,6 @@ class Navigation(object):
         self.base_status(working_copy)
         self.c.print_local_files(files)
 
-        self.input_nav()
-
     def browse_repo(self, rel=None):
         self.c.screen.clear()
         self.base_status("browse loading...", text_only=True)
@@ -133,8 +131,6 @@ class Navigation(object):
         else:
             self.base_status(os.path.join(self._base, rel if rel else ''))
             self.c.print_remote_files(files)
-
-        self.input_nav()
 
     def _append(self):
         """ Returns True if append something, else False"""
