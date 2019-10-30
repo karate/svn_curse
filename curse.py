@@ -1,6 +1,9 @@
 import curses
 from filter import Filter
 from line import Line
+from log import debug_start_done, get_logger
+
+logger = get_logger()
 
 
 class Curse(object):
@@ -96,22 +99,28 @@ class Curse(object):
         curses.echo()
         curses.endwin()
 
-    def go_down ( self ):
-        if ( self.selected is not None ):
+    @debug_start_done
+    def go_down(self):
+        if self.selected is not None:
             self.previously_selected = self.selected
 
-        if ( self.selected < 1 ):
+        if self.selected < 1:
             self.selected = len(self.lines) - 1
         else:
             self.selected = self.selected - 1
+        logger.debug("go_down selected: {} {}".format(self.selected,
+                                                      self.lines[self.selected]))
         self.print_lines()
 
-    def go_up ( self ):
-        if ( self.selected is not None ):
+    @debug_start_done
+    def go_up(self):
+        if self.selected is not None:
             self.previously_selected = self.selected
 
         if ( self.selected > len(self.lines) - 2 ):
             self.selected = 0
         else:
             self.selected = self.selected + 1
+        logger.debug("go_down selected: {} {}".format(self.selected,
+                                                      self.lines[self.selected]))
         self.print_lines()

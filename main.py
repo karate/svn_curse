@@ -7,6 +7,9 @@ from svn import local
 from config import Config
 
 from exceptions import QuitSignal
+from log import get_logger, debug_start_done
+
+logger = get_logger()
 
 
 def _get_working_copy( argv ):
@@ -17,7 +20,9 @@ def _get_working_copy( argv ):
     return cwd
 
 
+@debug_start_done
 def main():
+    logger.info('Program started.')
     base = _get_working_copy(sys.argv)
     client = local.LocalClient(base)
     client.callback_get_login = login_handler
@@ -25,6 +30,7 @@ def main():
     nav = Navigation(client, base)
     nav.base_status()
     nav.input_nav()
+    logger.info('Program done.')
 
 
 class NavigationStatus(object):
@@ -119,8 +125,8 @@ class Navigation(object):
                         self.view_status(self._base)
 
         except QuitSignal:
+            logger.info('Quiting')
             self.c.quit()
-            sys.exit(0)
 
     def base_status(self, text=None, text_only=False):
         self._status.text_only = text_only
@@ -133,6 +139,7 @@ class Navigation(object):
         else:
             self.c.update_status_line(self._status.shortcuts_(self))
 
+    @debug_start_done
     def view_status(self, working_copy):
         self.base_status("status loading...", text_only=True)
         files = self._client.status()
@@ -140,13 +147,16 @@ class Navigation(object):
         self.base_status(working_copy)
         self.c.print_local_files(files)
 
+    @debug_start_done
     def browse_repo(self, rel=None):
         self.c.screen.clear()
         self.base_status("browse loading...", text_only=True)
         d = dir.Dir(self._client)
         files = d.ls(rel)
         if files is None:
-            self.base_status(os.path.join(self._base, rel) + " - Not under version control.", text_only=True)
+            msg = os.path.join(self._base, rel) + " - Not under version control."
+            logger.warning(msg)
+            self.base_status(msg, text_only=True)
             self.history = self.history[:-1]
         else:
             self.base_status(os.path.join(self._base, rel if rel else ''))
