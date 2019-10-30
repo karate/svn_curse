@@ -3,6 +3,7 @@ import sys
 import os
 import dir
 import curse
+import traceback
 from svn import local
 from config import Config
 
@@ -23,13 +24,20 @@ def _get_working_copy( argv ):
 @debug_start_done
 def main():
     logger.info('Program started.')
-    base = _get_working_copy(sys.argv)
-    client = local.LocalClient(base)
-    client.callback_get_login = login_handler
+    try:
+        base = _get_working_copy(sys.argv)
+        client = local.LocalClient(base)
+        client.callback_get_login = login_handler
 
-    nav = Navigation(client, base)
-    nav.base_status()
-    nav.input_nav()
+        nav = Navigation(client, base)
+        nav.base_status()
+        nav.input_nav()
+    except OSError as exc:
+        logger.error(traceback.format_exc())
+        print(exc)
+        sys.exit(1)
+    except Exception:
+        logger.error(traceback.format_exc())
     logger.info('Program done.')
 
 
