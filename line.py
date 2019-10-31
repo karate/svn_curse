@@ -2,7 +2,7 @@ import curses
 
 
 class Line():
-    def __init__( self, idx, text, screen, colors ):
+    def __init__(self, idx, text, screen, colors):
         self.text = text
         self.text = text
         self.colors = colors

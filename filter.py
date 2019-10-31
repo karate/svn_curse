@@ -3,9 +3,9 @@ from config import Config
 
 
 class Filter():
-    def __init__( self, screen, colors ):
+    def __init__(self, screen, colors):
         # Load colors from config
-        self.COLORS = Config.colors;
+        self.COLORS = Config.colors
 
         # Assign colors
         self.screen = screen
@@ -21,7 +21,7 @@ class Filter():
             'remote': colors[self.COLORS['remote']],
         }
 
-    def filter_local_files ( self, files ):
+    def filter_local_files (self, files):
         lines = []
         for idx, f in enumerate(files):
             filename = f.name
@@ -30,14 +30,13 @@ class Filter():
             lines.append( line )
         return lines
 
-    def filter_remote_repo ( self, files ):
+    def filter_remote_repo (self, files):
         lines = []
         for idx, f in enumerate(files):
             line = self.construct_line(f['path'], f['status'], idx+1)
             lines.append(line)
-        mlines, _ = self.screen.getmaxyx()
         return lines
 
-    def construct_line( self, filename, status, idx ):
+    def construct_line(self, filename, status, idx):
         color = self.color_codes[status]
         return Line( idx, filename ,self.screen, color )

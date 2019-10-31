@@ -13,7 +13,7 @@ from log import get_logger, debug_start_done
 logger = get_logger()
 
 
-def _get_working_copy( argv ):
+def _get_working_copy(argv):
     if (len(argv) > 1):
         cwd = argv[1]
     else:

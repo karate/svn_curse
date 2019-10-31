@@ -7,7 +7,7 @@ logger = get_logger()
 
 
 class Curse(object):
-    def _set_colors( self ):
+    def _set_colors(self):
         curses.start_color()
         curses.use_default_colors()
         # Normal colors
@@ -34,7 +34,7 @@ class Curse(object):
             "black":  [curses.color_pair(6), curses.color_pair(12)],
         }
 
-    def __init__ ( self ):
+    def __init__ (self):
         # Initialize screen
         self.screen = curses.initscr()
         self.screen.keypad(True)
@@ -59,24 +59,24 @@ class Curse(object):
         self.selected = None
         self.previously_selected = None
 
-    def update_status_line( self, text ):
+    def update_status_line(self, text):
         text = text.ljust( self.mcols )
         l = Line( 0, text, self.screen, [curses.A_REVERSE, None] )
         l.print()
         self.screen.refresh()
 
-    def print_local_files( self, files):
+    def print_local_files(self, files):
         filter = Filter( self.screen, self.colors )
         self.lines = filter.filter_local_files( files )
         self.print_lines()
 
-    def print_remote_files( self, files):
+    def print_remote_files(self, files):
         self._clear_selection()
         filter = Filter( self.screen, self.colors)
         self.lines = filter.filter_remote_repo( files )
         self.print_lines()
 
-    def print_lines ( self ):
+    def print_lines (self):
         if ( len(self.lines) == 0 ):
             self.update_status_line(' * Nothing to show * ')
         else:
@@ -93,7 +93,7 @@ class Curse(object):
 
         self.screen.refresh()
 
-    def quit( self ):
+    def quit(self):
         curses.nocbreak()
         self.screen.keypad(False)
         curses.echo()

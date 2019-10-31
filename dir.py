@@ -1,5 +1,5 @@
 class Dir(object):
-    def __init__ ( self, client ):
+    def __init__ (self, client):
         self.client = client
         self.previous = None
 
