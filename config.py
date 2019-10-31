@@ -1,6 +1,11 @@
+"""
+Config Parse class. It is responsible to parse config.txt file.
+"""
 from configparser import ConfigParser
 
-class Config():
+
+class Config:
+    """ Config class."""
     # Load config file
     config = ConfigParser()
     config.read('config.txt')

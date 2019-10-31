@@ -1,11 +1,15 @@
 #! /usr/bin/env python3
+"""
+Main module
+This is a proof-of-concept command-line svn client with ncurses, written in python.
+"""
 import sys
 import os
-import dir
 import curse
 import traceback
 from svn import local
 from config import Config
+from dir import Dir
 
 from exceptions import QuitSignal
 from log import get_logger, debug_start_done
@@ -14,7 +18,7 @@ logger = get_logger()
 
 
 def _get_working_copy(argv):
-    if (len(argv) > 1):
+    if len(argv) > 1:
         cwd = argv[1]
     else:
         cwd = os.getcwd()
@@ -23,6 +27,7 @@ def _get_working_copy(argv):
 
 @debug_start_done
 def main():
+    """ Main function"""
     logger.info('Program started.')
     try:
         base = _get_working_copy(sys.argv)
@@ -41,7 +46,8 @@ def main():
     logger.info('Program done.')
 
 
-class NavigationStatus(object):
+class NavigationStatus:
+    """ Navigation status class"""
     def __init__(self):
         self._map = {
             Config.keys['up']: 'up',
@@ -58,6 +64,7 @@ class NavigationStatus(object):
         self.text_only = False
 
     def shortcuts_(self, navigation):
+        """ Shortcuts masking function"""
         excludes = []
 
         if self.text:
@@ -86,11 +93,13 @@ class NavigationStatus(object):
         if self.text is not None and self.text_only:
             excludes = self._map.keys()
 
-        nav_text = ', '.join(['{}: {}'.format(x, y) for x, y in sorted(self._map.items()) if x not in excludes])
+        nav_text = ', '.join(['{}: {}'.format(x, y) for x, y in sorted(self._map.items())
+                              if x not in excludes])
         return nav_text
 
 
-class Navigation(object):
+class Navigation:
+    """ Navigation status class"""
     def __init__(self, client, base):
         self.c = curse.Curse()
         self._client = client
@@ -101,12 +110,14 @@ class Navigation(object):
 
     @property
     def path(self):
+        """ Returns navigation path"""
         try:
             return os.path.join(*self.history)
         except TypeError:
             return None
 
     def input_nav(self):
+        """ input nav responsible for reading input keys and do corresponding action"""
         try:
             while True:
                 cha = self.c.screen.getch()
@@ -137,18 +148,22 @@ class Navigation(object):
             self.c.quit()
 
     def base_status(self, text=None, text_only=False):
+        """ Base status changes status bar with given text. When text_only is True it displays
+        only the text without navigation keys."""
         self._status.text_only = text_only
         if text and text_only:
             self._status.text = str(text)
             self.c.update_status_line(self._status.text)
         elif text:
             self._status.text = str(text)
-            self.c.update_status_line(' - '.join([self._status.text, self._status.shortcuts_(self)]))
+            self.c.update_status_line(' - '.join([self._status.text,
+                                                  self._status.shortcuts_(self)]))
         else:
             self.c.update_status_line(self._status.shortcuts_(self))
 
     @debug_start_done
     def view_status(self, working_copy):
+        """ View status of given local working_copy"""
         self.base_status("status loading...", text_only=True)
         files = self._client.status()
 
@@ -157,10 +172,11 @@ class Navigation(object):
 
     @debug_start_done
     def browse_repo(self, rel=None):
+        """ Browse remote repo function"""
         self.c.screen.clear()
         self.base_status("browse loading...", text_only=True)
-        d = dir.Dir(self._client)
-        files = d.ls(rel)
+        _directory = Dir(self._client)
+        files = _directory.list(rel)
         if files is None:
             msg = os.path.join(self._base, rel) + " - Not under version control."
             logger.warning(msg)
@@ -194,8 +210,8 @@ def login_handler(*args):
     # return True, "username", "password", True
 
     # or prompt user
-    user = input( "Username: " )
-    passw = getpass.getpass( "Password: " )
+    user = input("Username: ")
+    passw = getpass.getpass("Password: ")
     return True, user, passw, True
 
 
