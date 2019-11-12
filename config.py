@@ -5,7 +5,7 @@ from configparser import ConfigParser
 
 
 class Config:
-    """ Config class."""
+    """Config class."""
     # Load config file
     config = ConfigParser()
     config.read('config.txt')

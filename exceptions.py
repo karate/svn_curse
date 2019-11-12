@@ -4,5 +4,5 @@ Exception module that holds all custom application exceptions.
 
 
 class QuitSignal(Exception):
-    """ QuitSignal exception"""
+    """QuitSignal exception."""
     pass

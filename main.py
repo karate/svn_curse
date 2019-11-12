@@ -27,7 +27,7 @@ def _get_working_copy(argv):
 
 @debug_start_done
 def main():
-    """ Main function"""
+    """Main function."""
     logger.info('Program started.')
     try:
         base = _get_working_copy(sys.argv)
@@ -47,7 +47,7 @@ def main():
 
 
 class NavigationStatus:
-    """ Navigation status class"""
+    """Navigation status class."""
     def __init__(self):
         self._map = {
             Config.keys['up']: 'up',
@@ -64,7 +64,7 @@ class NavigationStatus:
         self.text_only = False
 
     def shortcuts_(self, navigation):
-        """ Shortcuts masking function"""
+        """Shortcuts masking function."""
         excludes = []
 
         if self.text:
@@ -99,7 +99,7 @@ class NavigationStatus:
 
 
 class Navigation:
-    """ Navigation status class"""
+    """Navigation status class."""
     def __init__(self, client, base):
         self.c = curse.Curse()
         self._client = client
@@ -110,14 +110,14 @@ class Navigation:
 
     @property
     def path(self):
-        """ Returns navigation path"""
+        """Returns navigation path."""
         try:
             return os.path.join(*self.history)
         except TypeError:
             return None
 
     def input_nav(self):
-        """ input nav responsible for reading input keys and do corresponding action"""
+        """Input nav responsible for reading input keys and do corresponding action."""
         try:
             while True:
                 cha = self.c.screen.getch()
@@ -148,7 +148,7 @@ class Navigation:
             self.c.quit()
 
     def base_status(self, text=None, text_only=False):
-        """ Base status changes status bar with given text. When text_only is True it displays
+        """Base status changes status bar with given text. When text_only is True it displays
         only the text without navigation keys."""
         self._status.text_only = text_only
         if text and text_only:
@@ -163,7 +163,7 @@ class Navigation:
 
     @debug_start_done
     def view_status(self, working_copy):
-        """ View status of given local working_copy"""
+        """View status of given local working_copy."""
         self.base_status("status loading...", text_only=True)
         files = self._client.status()
 
@@ -172,7 +172,7 @@ class Navigation:
 
     @debug_start_done
     def browse_repo(self, rel=None):
-        """ Browse remote repo function"""
+        """Browse remote repo function."""
         self.c.screen.clear()
         self.base_status("browse loading...", text_only=True)
         _directory = Dir(self._client)
@@ -187,7 +187,7 @@ class Navigation:
             self.c.print_remote_files(files)
 
     def _append(self):
-        """ Returns True if append something, else False"""
+        """Returns True if append something, else False."""
         if self.c.selected:
             line = str(self.c.lines[self.c.selected])
             if line.endswith('/'):
@@ -196,7 +196,7 @@ class Navigation:
         return False
 
     def _remove(self):
-        """ Returns True if remove something, else False"""
+        """Returns True if remove something, else False."""
         if self.history:
             self.history = self.history[:-1]
             return True

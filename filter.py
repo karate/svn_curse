@@ -6,7 +6,7 @@ from config import Config
 
 
 class Filter:
-    """ Filter class"""
+    """Filter class."""
     def __init__(self, screen, colors):
         # Load colors from config
         self._colors = Config.colors
@@ -26,7 +26,7 @@ class Filter:
         }
 
     def filter_local_files(self, files):
-        """ Filter given local files"""
+        """Filter given local files."""
         lines = []
         for idx, _file in enumerate(files):
             filename = _file.name
@@ -36,7 +36,7 @@ class Filter:
         return lines
 
     def filter_remote_repo(self, files):
-        """ Filter given remote files"""
+        """Filter given remote files."""
         lines = []
         for idx, _file in enumerate(files):
             line = self.construct_line(_file['path'], _file['status'], idx+1)
@@ -44,6 +44,6 @@ class Filter:
         return lines
 
     def construct_line(self, filename, status, idx):
-        """ Construct line object"""
+        """Construct line object."""
         color = self.color_codes[status]
         return Line(idx, filename, self.screen, color)

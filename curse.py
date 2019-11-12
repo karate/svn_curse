@@ -10,7 +10,7 @@ logger = get_logger()
 
 
 class Curse:
-    """ Curses class."""
+    """Curses class."""
     def __init__(self):
         # Initialize screen
         self.screen = curses.initscr()
@@ -33,6 +33,7 @@ class Curse:
         self.lines = []
 
     def _set_colors(self):
+        """Set color codes."""
         curses.start_color()
         curses.use_default_colors()
         # Normal colors
@@ -60,31 +61,32 @@ class Curse:
         }
 
     def _clear_selection(self):
+        """Clear selected and previously selected items."""
         self.selected = None
         self.previously_selected = None
 
     def update_status_line(self, text):
-        """ Update status line with given text"""
+        """Update status line with given text."""
         text = text.ljust(self.mcols)
         _line = Line(0, text, self.screen, [curses.A_REVERSE, None])
         _line.print()
         self.screen.refresh()
 
     def print_local_files(self, files):
-        """ Print given local files"""
+        """Print given local files."""
         _filter = Filter(self.screen, self.colors)
         self.lines = _filter.filter_local_files(files)
         self.print_lines()
 
     def print_remote_files(self, files):
-        """ Print given remote files."""
+        """Print given remote files."""
         self._clear_selection()
         _filter = Filter(self.screen, self.colors)
         self.lines = _filter.filter_remote_repo(files)
         self.print_lines()
 
     def print_lines(self):
-        """ Print lines """
+        """Print lines."""
         if len(self.lines) == 0:
             self.update_status_line(' * Nothing to show * ')
         else:
@@ -102,7 +104,7 @@ class Curse:
         self.screen.refresh()
 
     def quit(self):
-        """ Quit curses"""
+        """Quit curses."""
         curses.nocbreak()
         self.screen.keypad(False)
         curses.echo()
@@ -110,7 +112,7 @@ class Curse:
 
     @debug_start_done
     def go_down(self):
-        """ Navigate down"""
+        """Navigate down."""
         if self.selected is not None:
             self.previously_selected = self.selected
 
@@ -124,7 +126,7 @@ class Curse:
 
     @debug_start_done
     def go_up(self):
-        """ Navigate up"""
+        """Navigate up."""
         if self.selected is not None:
             self.previously_selected = self.selected
 

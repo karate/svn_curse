@@ -5,7 +5,7 @@ from curses import error
 
 
 class Line:
-    """ Line class"""
+    """Line class."""
     def __init__(self, idx, text, screen, colors):
         self.text = text
         self.colors = colors
@@ -16,10 +16,11 @@ class Line:
         self._y = self.mlines - idx - 2
 
     def __str__(self):
+        """String representation."""
         return self.text
 
     def print(self):
-        """ Print on curses ui"""
+        """Print on curses ui."""
         if self.selected:
             self.color = self.colors[1]
         else:
@@ -31,16 +32,16 @@ class Line:
             pass
 
     def clear_line(self, line_no):
-        """ Clear line"""
+        """Clear line."""
         try:
             self.screen.addstr(line_no, 0, ' '.ljust(self.mcols, ' '))
         except error:
             pass
 
     def set_selected(self, selected=True):
-        """ Set selected"""
+        """Set selected."""
         self.selected = selected
 
     def get_text(self):
-        """ Get text"""
+        """Get text."""
         return self.text

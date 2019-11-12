@@ -4,13 +4,13 @@ Dir class.
 
 
 class Dir:
-    """ Dir class"""
+    """Dir class."""
     def __init__(self, client):
         self.client = client
         self.previous = None
 
     def list(self, rel=None):
-        """ It lists the given rel path based on clients base path"""
+        """It lists the given rel path based on clients base path."""
         files = []
         try:
             list = sorted(self.client.list(rel_path=rel), reverse=True)
