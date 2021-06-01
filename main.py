@@ -188,11 +188,10 @@ class Navigation:
 
     def _append(self):
         """Returns True if append something, else False."""
-        if self.c.selected:
-            line = str(self.c.lines[self.c.selected])
-            if line.endswith('/'):
-                self.history.append(line.strip('/'))
-                return True
+        line = str(self.c.lines[self.c.selected])
+        if line.endswith('/'):
+            self.history.append(line.strip('/'))
+            return True
         return False
 
     def _remove(self):
