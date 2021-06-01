@@ -17,6 +17,10 @@ down = j
 up = k
 enter_dir = l
 back = h
+
 browse_repo = r
-view_status = w
+view_status = s
+
+revert_file = R
+
 quit = q

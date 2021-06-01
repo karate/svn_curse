@@ -56,6 +56,7 @@ class NavigationStatus:
             Config.keys['back']: 'previous directory',
             Config.keys['view_status']: 'view working copy status',
             Config.keys['browse_repo']: 'browse remote repo',
+            Config.keys['revert_file']: 'revert file',
             Config.keys['quit']: 'quit'
         }
         self.text = None
@@ -131,6 +132,10 @@ class Navigation:
                     elif cha == ord(Config.keys['enter_dir']) and self.mode == 'remote':
                         if self._append():
                             self.browse_repo(self.path)
+                    elif cha == ord(Config.keys['revert_file']) and self.mode == 'local':
+                        filename = str(self.c.lines[self.c.selected])
+                        self.revert_file(filename)
+                        self.view_status(self._base)
                 else:
                     if cha == ord(Config.keys['browse_repo']):
                         self.mode = 'remote'
@@ -139,7 +144,6 @@ class Navigation:
                     elif cha == ord(Config.keys['view_status']):
                         self.mode = 'local'
                         self.view_status(self._base)
-
         except QuitSignal:
             logger.info('Quiting')
             self.c.quit()
@@ -182,6 +186,9 @@ class Navigation:
         else:
             self.base_status(os.path.join(self._base, rel if rel else ''))
             self.c.print_remote_files(files)
+
+    def revert_file(self, path):
+        self._client.run_command("revert", [path])
 
     def _append(self):
         """Returns True if append something, else False."""
