@@ -4,9 +4,9 @@ This is a proof-of-concept command-line svn client with ncurses, written in pyth
 Features:
 - [x] View status with colors
 - [x] Browse remote repository
+- [x] Revert files
 - [ ] View diff
 - [ ] Commit files
-- [ ] Revert files
 - [ ] Blame
 
 Tips, issues, comments and pull requests are more than welcome.
