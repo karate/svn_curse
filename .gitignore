@@ -1,4 +1,5 @@
-.vimrc
+.vim/
 __pycache__
 venv
 svn_curse.log
+/tags
