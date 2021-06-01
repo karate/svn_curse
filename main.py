@@ -65,37 +65,34 @@ class NavigationStatus:
 
     def shortcuts_(self, navigation):
         """Shortcuts masking function."""
-        excludes = []
+        nav_menu = {}
 
         if self.text:
             self.main = False
         if self.main:
-            excludes.extend([
-                Config.keys['down'],
-                Config.keys['up'],
-                Config.keys['enter_dir']
-            ])
+            nav_menu[Config.keys['view_status']] = self._map[Config.keys['view_status']]
+            nav_menu[Config.keys['browse_repo']] = self._map[Config.keys['browse_repo']]
+            nav_menu[Config.keys['quit']] = self._map[Config.keys['quit']]
         else:
-            excludes.extend([
-                Config.keys['view_status'],
-                Config.keys['browse_repo']
-            ])
-        if not navigation.history:
-            excludes.append([
-                Config.keys['back']
-            ])
-        if navigation.mode == 'local':
-            excludes.extend([
-                Config.keys['back'],
-                Config.keys['enter_dir']
-            ])
+            if navigation.mode == 'local':
+                nav_menu[Config.keys['up']] = self._map[Config.keys['up']]
+                nav_menu[Config.keys['down']] = self._map[Config.keys['down']]
+                nav_menu[Config.keys['enter_dir']] = self._map[Config.keys['enter_dir']]
+                nav_menu[Config.keys['back']] = self._map[Config.keys['back']]
+                nav_menu[Config.keys['revert_file']] = self._map[Config.keys['revert_file']]
+                nav_menu[Config.keys['quit']] = self._map[Config.keys['quit']]
+            elif navigation.mode == 'remote':
+                nav_menu[Config.keys['up']] = self._map[Config.keys['up']]
+                nav_menu[Config.keys['down']] = self._map[Config.keys['down']]
+                nav_menu[Config.keys['enter_dir']] = self._map[Config.keys['enter_dir']]
+                nav_menu[Config.keys['back']] = self._map[Config.keys['back']]
+                nav_menu[Config.keys['quit']] = self._map[Config.keys['quit']]
 
-        if self.text is not None and self.text_only:
-            excludes = self._map.keys()
+            if not navigation.history:
+                nav_menu.pop(Config.keys['back'])
 
-        nav_text = ', '.join(['{}: {}'.format(x, y) for x, y in sorted(self._map.items())
-                              if x not in excludes])
-        return nav_text
+        nav_menu = ', '.join(['{}: {}'.format(x, y) for x, y in sorted(nav_menu.items())])
+        return nav_menu
 
 
 class Navigation:
