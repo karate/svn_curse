@@ -25,6 +25,7 @@ class Curse:
         self.status_line = ""
         self.selected = None
         self.previously_selected = None
+        self.default_selected = None
         self.previous = None
         self.working_copy = None
         self.mlines, self.mcols = self.screen.getmaxyx()
@@ -60,6 +61,9 @@ class Curse:
             "black":  [curses.color_pair(6), curses.color_pair(12)],
         }
 
+    def set_default_selected(self, selected):
+        self.default_selected = selected
+
     def _clear_selection(self):
         """Clear selected and previously selected items."""
         self.selected = None
@@ -87,11 +91,16 @@ class Curse:
 
     def print_lines(self):
         """Print lines."""
+
         if len(self.lines) == 0:
             self.update_status_line(' * Nothing to show * ')
         else:
-            if self.selected is None:
-                self.selected = len(self.lines) - 1
+            if self.default_selected is not None:
+              self.selected = self.default_selected
+              self.default_selected = None
+            else:
+                if self.selected is None:
+                    self.selected = len(self.lines) - 1
 
             if self.previously_selected is not None:
                 self.lines[self.previously_selected].set_selected(False)

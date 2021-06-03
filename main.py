@@ -103,6 +103,7 @@ class Navigation:
         self._client = client
         self._base = base
         self.history = []
+        self.parent_selected = None
         self.mode = None
         self._status = NavigationStatus()
 
@@ -185,6 +186,9 @@ class Navigation:
             self.history = self.history[:-1]
         else:
             self.base_status(os.path.join(self._base, rel if rel else ''))
+            if self.parent_selected:
+              selected_index = next((index for (index, d) in enumerate(files) if d["path"] == self.parent_selected), None)
+              self.c.set_default_selected(selected_index)
             self.c.print_remote_files(files)
 
     def revert_file(self, path):
@@ -201,7 +205,7 @@ class Navigation:
     def _remove(self):
         """Returns True if remove something, else False."""
         if self.history:
-            self.history = self.history[:-1]
+            self.parent_selected = self.history.pop() + '/'
             return True
         return False
 
