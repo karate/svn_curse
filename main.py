@@ -104,6 +104,7 @@ class Navigation:
         self._base = base
         self.history = []
         self.parent_selected = None
+        self.show_unversioned = False
         self.mode = None
         self._status = NavigationStatus()
 
@@ -136,6 +137,11 @@ class Navigation:
                     elif cha == ord(Config.keys['revert_file']) and self.mode == 'local':
                         filename = str(self.c.lines[self.c.selected])
                         self.revert_file(filename)
+                        self.c.screen.clear()
+                        self.view_status(self._base)
+                    elif cha == ord(Config.keys['toggle_unversioned_files']) and self.mode == 'local':
+                        self.show_unversioned = not self.show_unversioned
+                        self.c.screen.clear()
                         self.view_status(self._base)
                 else:
                     if cha == ord(Config.keys['browse_repo']):
@@ -148,6 +154,7 @@ class Navigation:
         except QuitSignal:
             logger.info('Quiting')
             self.c.quit()
+
 
     def base_status(self, text=None, text_only=False):
         """Base status changes status bar with given text. When text_only is True it displays
@@ -170,7 +177,7 @@ class Navigation:
         files = self._client.status()
 
         self.base_status(working_copy)
-        self.c.print_local_files(files)
+        self.c.print_local_files(files, self.show_unversioned)
 
     @debug_start_done
     def browse_repo(self, rel=None):

@@ -76,10 +76,10 @@ class Curse:
         _line.print()
         self.screen.refresh()
 
-    def print_local_files(self, files):
+    def print_local_files(self, files, show_unversioned):
         """Print given local files."""
         _filter = Filter(self.screen, self.colors)
-        self.lines = _filter.filter_local_files(files)
+        self.lines = _filter.filter_local_files(files, show_unversioned)
         self.print_lines()
 
     def print_remote_files(self, files):
@@ -91,24 +91,26 @@ class Curse:
 
     def print_lines(self):
         """Print lines."""
-
         if len(self.lines) == 0:
             self.update_status_line(' * Nothing to show * ')
-        else:
-            if self.default_selected is not None:
-              self.selected = self.default_selected
-              self.default_selected = None
-            else:
-                if self.selected is None:
-                    self.selected = len(self.lines) - 1
+            return
 
-            if self.previously_selected is not None:
-                self.lines[self.previously_selected].set_selected(False)
+        if self.default_selected is not None:
+          self.selected = self.default_selected
+          self.default_selected = None
 
-            self.lines[self.selected].set_selected()
+        if self.selected is None or self.selected >= len(self.lines):
+            self.selected = len(self.lines) - 1
 
-            for line in self.lines:
-                line.print()
+        if self.previously_selected is None or self.previously_selected >= len(self.lines):
+            self.previously_selected = len(self.lines) - 1
+        if self.previously_selected is not None:
+            self.lines[self.previously_selected].set_selected(False)
+
+        self.lines[self.selected].set_selected()
+
+        for line in self.lines:
+            line.print()
 
         self.screen.refresh()
 

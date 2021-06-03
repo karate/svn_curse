@@ -22,5 +22,5 @@ browse_repo = r
 view_status = s
 
 revert_file = R
-
+toggle_unversioned_files = u
 quit = q
